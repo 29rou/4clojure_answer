@@ -129,8 +129,7 @@ mapcat list
 #(apply map list (partition-all %2 %1))
 
 44. Rotate Sequence
-#(drop (mod %1 (count %2)) (take (+ (mod %1 (count %2)) (count %2)) (cycle 
-%2)))
+#(drop (mod %1 (count %2)) (take (+ (mod %1 (count %2)) (count %2)) (cycle %2)))
 
 45. Intro to Iterate
 '(1 4 7 10 13)
@@ -161,34 +160,34 @@ mapcat list
 
 54. Partition a Sequence
 #(letfn
-  [(partition'[n s] 
-              (lazy-seq 
-               (when 
-                 (<= n (count s)) 
-                 (cons 
-                  (take n s) 
-                  (partition' n (drop n s))))))] 
-  (partition' %1 %2))
+     [(partition'[n s] 
+        (lazy-seq 
+         (when 
+             (<= n (count s)) 
+           (cons 
+            (take n s) 
+            (partition' n (drop n s))))))] 
+   (partition' %1 %2))
 
 56. Find Distinct Items
 (fn [xs]
-    (loop [xs' xs result []]
-        (if (empty? xs') result
-            (recur (remove #(= (first xs') %) xs') (conj result (first 
-xs'))))))
+  (loop [xs' xs result []]
+    (if (empty? xs') result
+        (recur
+         (remove #(= (first xs') %) xs') (conj result (first xs'))))))
 
 57. Simple Recursion
 '(5 4 3 2 1)
 
 58. Function Composition
 (fn [& fs](letfn [(comp' 
-    ([] identity)
-    ([f] f)
-    ([f g] (fn 
-        ([] (f (g)))
-        ([& x] (f (apply g x)))))
-    ([f g & h] (reduce comp' f (list* g h))))]
-  (apply comp' fs)))
+                    ([] identity)
+                    ([f] f)
+                    ([f g] (fn 
+                             ([] (f (g)))
+                             ([& x] (f (apply g x)))))
+                    ([f g & h] (reduce comp' f (list* g h))))]
+            (apply comp' fs)))
 
 59. Juxtaposition
 (fn [& f] (fn [& x] (map #(apply %1 x) f)))
@@ -203,8 +202,9 @@ xs'))))))
 (fn [f n](letfn [(itr [x] (lazy-seq (cons x (itr (f x)))))] (itr n)))
 
 63. Group a Sequence
-(fn [f ns] (apply merge (map #(hash-map (f (first %1)) (vec %1)) 
-(partition-by f (sort-by f ns)))))
+(fn [f ns] (apply merge
+                  (map #(hash-map (f (first %1)) (vec %1))
+                             (partition-by f (sort-by f ns)))))
 
 64. Intro to Reduce
 +
@@ -213,12 +213,16 @@ xs'))))))
 !!!!!!
 
 66. Greatest Common Divisor
-(fn [& ns](apply min (apply concat (take-while #(not (zero? (first %))) 
-(iterate (fn[[a b]] (list (rem b a) a)) (sort ns))))))
+(fn [& ns](apply min
+                 (apply concat
+                        (take-while
+                         #(not (zero? (first %)))
+                         (iterate (fn[[a b]] (list (rem b a) a)) (sort ns))))))
 
 67. Prime Numbers
-(fn [c](take c (filter (fn [n](not-any?  #(zero?  (mod n %1)) (range 2 n))) 
-(iterate inc 2))))
+(fn [c](take c
+             (filter (fn [n](not-any?  #(zero?  (mod n %1)) (range 2 n)))
+                       (iterate inc 2))))
 
 68. Recurring Theme
 '(7 6 5 4 3)
@@ -278,7 +282,7 @@ reduce +
 !!!!!!
 
 87. nill 
-  
+
 88. Symmetric Difference
 #(set (concat (apply disj %1 %2) (apply disj %2 %1)))
 
@@ -301,21 +305,303 @@ reduce +
 !!!!!!
 
 95. To Tree, or not to Tree
-#(letfn [(tree-detect [[a b c :as xs]] (and (= 3 (count xs)) (not 
-(sequential? a)) (if (nil? b) true (if (sequential? b) (tree-detect b) 
-false)) (if (nil? c) true (if (sequential? c) (tree-detect c) false))))] 
-(tree-detect  %))
+#(letfn [(tree-detect [[a b c :as xs]]
+           (and (= 3 (count xs))
+                (not (sequential? a))
+                (if (nil? b) true (if (sequential? b) (tree-detect b) false))
+                (if (nil? c) true (if (sequential? c) (tree-detect c) false))))]
+   (tree-detect  %))
 
 96. Beauty is Symmetry 
 #(letfn [(re-reverse [[root l-node r-node]] 
-    (list root
-        (if (sequential? r-node) (re-reverse r-node) r-node) 
-            (if (sequential? l-node) (re-reverse l-node) l-node)))] 
-    (= (second %) (second (re-reverse %))))
+           (list root
+                 (if (sequential? r-node) (re-reverse r-node) r-node) 
+                 (if (sequential? l-node) (re-reverse l-node) l-node)))] 
+   (= (second %) (second (re-reverse %))))
 
 97. Pascal's Triangle
-(fn [n] (nth (iterate #(mapv (partial apply +) (partition-all 2 1 (cons 0 % 
-))) [1]) (dec n)))
+(fn [n] (nth
+         (iterate #(mapv (partial apply +) (partition-all 2 1 (cons 0 %))) [1])
+         (dec n)))
 
 98. Equivalence Classes
 !!!!!!
+
+99. Product Digits
+#(mapv (fn [n] (Integer/parseInt (str n))) (str (* %1 %2)))
+
+100. Least Common Multiple
+(fn [& ns]
+  (reduce
+   #(/ (* %1 %2)
+       ((fn [x y]
+          (loop[x' (max x y) y' (min x y)]
+            (let [rem-num (mod x' y')]
+              (if (zero? rem-num) y'
+                  (recur y' rem-num))))) %1 %2)) ns))
+
+101. Levenshtein Distance
+!!!!!!
+
+102. intoCamelCase
+!!!!!!
+
+103. Generating k-combinations
+!!!!!!
+
+104. Write Roman Numerals
+!!!!!!
+
+105. Identify keys and values
+!!!!!!
+
+106. Number Maze
+!!!!!!
+
+107. Simple closures
+(fn [x] (fn [y] (int (Math/pow y x))))
+
+108. Lazy Searching
+!!!!!!
+
+109. nil
+
+110. Sequence of pronunciations
+!!!!!!
+
+111. Crossword puzzle
+!!!!!!
+
+112. Sequs Horribilis
+!!!!!!
+
+113. Making Data Dance
+!!!!!!
+
+114. Global take-while
+!!!!!!
+
+115. The Balance of N
+!!!!!!
+
+116. Prime Sandwich
+!!!!!!
+
+117. For Science!
+!!!!!!
+
+118. Re-implement Map
+#(letfn[
+        (map' [x]
+          (lazy-seq
+           (cons
+            (%1 (first x))
+            (let[xs (rest x)]
+              (when-not (empty? xs) (map' xs))))))]
+   (map' %2))
+
+119. Win at Tic-Tac-Toe
+!!!!!!
+
+120. Sum of square of digits
+#(reduce
+  (fn [x y]
+    (if
+        (neg?
+         (reduce
+          (fn [a b]
+            (int (- a
+                    (Math/pow (Integer/parseInt (str b)) 2))))
+          (Integer/parseInt y) y))
+      (inc x) x)) 0 (map str %))
+
+121. Universal Computation Engine
+!!!!!!
+
+122. Read a binary number
+(fn [ns]
+  (apply +
+         (map #(* %1 %2)
+              (map
+               (fn [ms]
+                 (Integer/parseInt (str ms)))
+               (apply list (reverse ns)))
+              (iterate #(* 2 %) 1))))
+
+123. nil
+
+124. Analyze Reversi
+!!!!!!
+
+125. Gus' Quinundrum
+!!!!!!
+
+126. Through the Looking Class
+Class
+
+127. Love Triangle
+!!!!!!
+
+128. Recognize Playing Cards
+(fn [[s r]]
+  (array-map :suit
+             ({:D :diamond, :H :heart, :S :speade, :C :club}
+              (keyword (str s)))
+             :rank
+             (condp = r \A 12 \T 8 \J 9 \Q 10 \K 11
+                    (- (Integer/parseInt (str r)) 2))))
+
+129. nil
+
+130. Tree reparenting
+!!!!!!
+
+131. Sum Some Set Subsets
+!!!!!!
+
+132. Insert between two items
+!!!!!!
+
+133. nil
+
+134. A nil key
+#(and
+  (contains? %2 %1)
+  (nil? (%2 %1)))
+
+135. Infix Calculator
+(fn [& ls]
+  (letfn [
+          (calc ([x] x)
+            ([x y & z]
+             (y (apply calc z) x)))]
+    (apply calc (reverse ls))))
+
+136. nil
+
+137. Digits and bases
+!!!!!!
+
+138. Squares Squared
+!!!!!!
+
+139. nil
+
+140. Veitch, Please!
+!!!!!!
+
+141. Tricky card games
+!!!!!!
+
+142. nil
+
+143. dot product
+(fn [xs ys]
+  (reduce +
+          (map #(* %1 %2) xs ys)))
+
+144. Oscilrate
+!!!!!!
+
+145. For the win
+'(1 5 9 13 17 21 25 29 33 37)
+
+146. Trees into tables
+(fn [ns]
+    (into (array-map) 
+        (for [[x y]ns 
+            [y' z] y]
+             (vec [(vector x y') z]))))
+
+147. Pascal's Trapezoid
+#(letfn [
+         (p-trapezoid [ns]
+           (lazy-seq
+            (cons ns
+                  (p-trapezoid
+                   (map
+                    (partial apply +')
+                    (partition-all 2 1 (cons 0 ns)))))))]
+   (p-trapezoid %))
+
+148. The Big Divide
+!!!!!!
+
+149. nil
+
+150. Palindromic Numbers
+!!!!!!
+
+151. nil
+
+152. Latin Square Slicing
+
+153. Pairwise Disjoint Sets
+#(=
+  (count (apply concat %))
+  (count (set (apply concat %))))
+
+154. nil
+
+155. nil
+
+156. Map Defaults
+#(zipmap %2 (repeat %1))
+
+157. Indexing Sequences
+#(mapv
+  (comp vec reverse)
+  (map-indexed vector %))
+
+158. Decurry
+!!!!!!
+
+159. nil
+
+160. nil
+
+161. Subset and Superset
+#{1 2}
+
+162. Logical falsity and truth
+1
+
+163. nil
+
+164. Language of a DFA
+!!!!!!
+
+165. nil
+
+166. Comparisons
+(fn [x y z] (cond (x y z) :lt (x z y) :gt :else :eq))
+
+167. nil
+
+168. Infinite Matrix
+!!!!!!
+
+169. nil
+
+170. nil
+
+171. Intervals
+!!!!!!
+
+172. nil
+
+173. Intro to Destructuring 2
+x y
+
+174. nil
+
+175 nil
+
+176 nil
+
+177. Balancing Brackets
+!!!!!!
+
+178. Best Hand
+!!!!!!
+
