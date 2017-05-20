@@ -210,7 +210,12 @@ mapcat list
 +
 
 65. Black Box Testing
-!!!!!!
+(fn [x]
+  (condp #(= %1 (empty %2)) x
+    '{} ':map
+    '#{} ':set
+    (if (reversible? x) ':vector :list)))
+
 
 66. Greatest Common Divisor
 (fn [& ns](apply min
