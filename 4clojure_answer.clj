@@ -376,7 +376,11 @@ reduce +
 !!!!!!
 
 102. intoCamelCase
-!!!!!!
+(fn [xs] 
+  (apply str 
+    ((fn [[y & ys]] (cons (Character/toLowerCase y) ys))
+      (mapcat (fn [[y & ys]] (cons (Character/toUpperCase y) ys))
+        (re-seq #"[a-zA-Z]+" xs)))))
 
 103. Generating k-combinations
 !!!!!!
