@@ -49,8 +49,8 @@ true
 
 17. Sequences: map
 '(6 7 8)
-
 18. Sequences: filter
+
 '(6 7)
 
 19. Last Element
@@ -193,7 +193,17 @@ mapcat list
 (fn [& f] (fn [& x] (map #(apply %1 x) f)))
 
 60. Sequence Reductions
-!!!!!!
+(letfn [(reductions'
+  ([f init [x & xs]] 
+    (lazy-seq 
+      (let [redu ((fnil f 0 0) init x)] 
+        (if (nil? x) 
+          (list init) 
+          (cons init (reductions' f redu xs)))))))]
+  (fn 
+    ([f [x & xs]] (reductions' f x xs))
+    ([f init x] (reductions' f init x))))
+    
 
 61. Map Construction
 (comp (partial apply hash-map) (partial mapcat #(list %1 %2)))
@@ -228,12 +238,16 @@ mapcat list
 (fn [c](take c
              (filter (fn [n](not-any?  #(zero?  (mod n %1)) (range 2 n)))
                        (iterate inc 2))))
-
+b
 68. Recurring Theme
 '(7 6 5 4 3)
 
 69. Merge with a Function
-!!!!!!
+(fn [f x & xs] 
+  (letfn [(merge-with-sub [init y] 
+      (update-in init (vector (first y)) (fn [k] (let [v (second y)] (if (nil? k) v (f k v))))))] 
+        (reduce #(if (seq? %2) (merge-with-sub %1 %2) (reduce merge-with-sub %1 %2)) x xs)))
+
 
 70. Word Sorting
 #(sort-by clojure.string/lower-case  (re-seq #"\w+" %))
@@ -248,16 +262,26 @@ reduce +
 !!!!!!
 
 74. Filter Perfect Squares
-!!!!!!
+(fn [x] 
+  (apply str
+    (interpose \,
+      (filter #(= % (int (Math/pow (int (Math/sqrt %)) 2))) 
+      (map #(Integer/parseInt %)
+        (re-seq #"[0-9]+" x))))))
+
 
 75. Euler's Totient Function
 !!!!!!
 
 76. Intro to Trampoline
-!!!!!!
+[1 3 5 7 9 11]
 
 77. Anagram Finder
-!!!!!!
+(fn [l] 
+  (set 
+    (map #(set (fnext %))  
+      (filter #(<= 2 (count (second %))) 
+        (group-by #(set %) l)))))
 
 78. Reimplement Trampoline
 !!!!!!
@@ -266,7 +290,10 @@ reduce +
 !!!!!!  
 
 80. Perfect Numbers
-!!!!!!
+(fn [x]
+  (= x 
+    (apply + 
+      (filter #(zero? (mod x %)) (range 1 x)))))
 
 81. Set Intersection
 (fn [fst snd] (set (filter #(contains? fst %) snd)))
