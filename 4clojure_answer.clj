@@ -271,7 +271,11 @@ reduce +
 
 
 75. Euler's Totient Function
-!!!!!!
+(fn [x]
+  (letfn[(gcd [x y] (let[r (rem y x)] (if (zero? r) x (gcd r x))))]
+    (count 
+      (filter #(= 1 (gcd % x))
+        (range 1 (inc x))))))
 
 76. Intro to Trampoline
 [1 3 5 7 9 11]
@@ -311,7 +315,18 @@ reduce +
 !!!!!!
 
 86. Happy numbers
-!!!!!!
+(fn [x]
+  (letfn [(happy-number 
+    ([l n] (cond 
+      (= n 1) true 
+      (not (apply distinct? l)) false 
+      :else 
+        (happy-number 
+          (cons n l) 
+            (int (apply + (map #(Math/pow % 2) (map #(int (- (int %) (int \0))) (str n)))))))))] 
+    (happy-number (list 0) x)))
+
+
 
 87. nill 
 
