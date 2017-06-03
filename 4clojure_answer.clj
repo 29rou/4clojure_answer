@@ -288,7 +288,9 @@ reduce +
         (group-by #(set %) l)))))
 
 78. Reimplement Trampoline
-!!!!!!
+(fn [f & xs] 
+  (loop[tr (apply f xs)] 
+    (if-not (fn? tr) tr (recur (tr)))))
 
 79. Triangle Minimal Path
 !!!!!!  
@@ -312,7 +314,10 @@ reduce +
 !!!!!!
 
 85. Power Set
-!!!!!!
+(fn [x] (set 
+  (reduce 
+    (fn [ps x] (into ps (map #(conj % x) ps))) 
+      (list (set nil)) (apply list x))))
 
 86. Happy numbers
 (fn [x]
@@ -372,7 +377,8 @@ reduce +
          (dec n)))
 
 98. Equivalence Classes
-!!!!!!
+(fn [f x] (set 
+  (map #(set (second %)) (group-by f (apply list x))))) 
 
 99. Product Digits
 #(mapv (fn [n] (Integer/parseInt (str n))) (str (* %1 %2)))
@@ -404,7 +410,10 @@ reduce +
 !!!!!!
 
 105. Identify keys and values
-!!!!!!
+(fn [x] (apply array-map 
+  (mapcat #(if (keyword (first %)) (interpose [] %) (list (apply vector %))) 
+    (partition-by keyword? x))))
+
 
 106. Number Maze
 !!!!!!
@@ -433,7 +442,12 @@ reduce +
 !!!!!!
 
 115. The Balance of N
-!!!!!!
+(fn [x] 
+  (let[il (map #(- (int  %) (int \0)) (str x)) 
+       sizediv2 (quot (count il) 2)]  
+    (= 
+      (apply + (take sizediv2 il)) 
+      (apply + (take-last sizediv2 il)))))
 
 116. Prime Sandwich
 !!!!!!
