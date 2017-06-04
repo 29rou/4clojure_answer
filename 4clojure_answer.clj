@@ -545,7 +545,11 @@ Class
 136. nil
 
 137. Digits and bases
-!!!!!!
+(fn [x base] 
+  (if (zero? x) [0] 
+    (loop[dl '() x' x] 
+      (if (zero? x') (vec dl) 
+        (recur (cons (mod x' base) dl) (quot x' base))))))
 
 138. Squares Squared
 !!!!!!
