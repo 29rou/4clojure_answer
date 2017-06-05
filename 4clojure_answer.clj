@@ -422,12 +422,24 @@ reduce +
 (fn [x] (fn [y] (int (Math/pow y x))))
 
 108. Lazy Searching
-!!!!!!
+(defn lazy-search ([& xs] (let[xsf (map first xs) xsr (map rest xs)] (if (apply = xsf) (first xsf) (let[min-xsf (apply min xsf)] (map #(if(= %1 min-xsf) %2 (cons %1 %2)) xsf xsr))))))
+
+(fn ([& n] 
+  (first (drop-while seq? (iterate 
+    (fn [xs] 
+      (let[xsf (map first xs)] 
+        (if (apply = xsf) 
+          (first xsf) 
+          (let[min-xsf (apply min xsf)] 
+            (map #(if(= %1 min-xsf) %2 (cons %1 %2)) xsf xsr (map rest xs)))))) n)))))
 
 109. nil
 
 110. Sequence of pronunciations
-!!!!!!
+(fn [ns] (rest 
+  (iterate 
+    (fn [ns'] (mapcat (fn[x] (list (count x) (first x))) 
+      (partition-by identity ns'))) ns)))
 
 111. Crossword puzzle
 !!!!!!
@@ -570,7 +582,7 @@ Class
           (map #(* %1 %2) xs ys)))
 
 144. Oscilrate
-!!!!!!
+(fn [n & fs] (reductions #(%2 %1) n (cycle fs)))
 
 145. For the win
 '(1 5 9 13 17 21 25 29 33 37)
@@ -623,7 +635,7 @@ Class
   (map-indexed vector %))
 
 158. Decurry
-!!!!!!
+(fn [f] (fn [& ns](reduce #(%1 %2) f ns)))
 
 159. nil
 
