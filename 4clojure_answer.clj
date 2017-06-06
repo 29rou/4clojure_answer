@@ -409,7 +409,28 @@ reduce +
 !!!!!!
 
 104. Write Roman Numerals
-!!!!!!
+(fn [x] 
+  (let[[x1 x2 x3 x4] (reverse(map #(-(int %)(int \0))(str x)))]
+    (apply str (apply concat (remove nil?
+      (cons (when-not (nil? x4) (repeat x4 "M"))
+        (cons (cond
+          (nil? x3) nil
+          (= x3 9) "CM"
+          (and (< x3 9) (> x3 4)) (cons "D" (repeat (- x3 5) "C"))
+          (= x3 4) "CD"
+          :else (repeat x3 "C"))
+            (cons (cond
+              (nil? x2) nil
+              (= x2 9) '"XC"
+              (and (< x2 9) (> x2 4)) (cons "L" (repeat (- x2 5)"X"))
+              (= x2 4) "XL"
+              :else (repeat x2 "X"))
+                (cons (cond
+                  (nil? x1) nil
+                  (= x1 9) "IX"
+                  (and (< x1 9) (> x1 4)) (cons "V" (repeat (- x1 5)"I"))
+                  (= x1 4) "IV"
+                  :else (repeat x1 "I")) nil)))))))))
 
 105. Identify keys and values
 (fn [x] (apply array-map 
