@@ -351,7 +351,9 @@ reduce +
 !!!!!!
 
 93. Partially Flatten a Sequence
-!!!!!!
+(letfn [(pfs [s] 
+  (mapcat 
+    #(if-not (every? sequential? %) (list %) (pfs %)) s))]pfs)
 
 94. Game of Life
 !!!!!!
@@ -451,7 +453,9 @@ reduce +
 !!!!!!
 
 114. Global take-while
-!!!!!!
+(letfn [(gtw [n p xs] (lazy-seq 
+  (let[x (first xs) n' (if (p x) (dec n) n)] 
+    (when-not (zero? n') (cons x (gtw n' p (rest xs)))))))] gtw)
 
 115. The Balance of N
 (fn [x] 
