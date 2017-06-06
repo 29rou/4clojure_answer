@@ -541,7 +541,11 @@ Class
 !!!!!!
 
 132. Insert between two items
-!!!!!!
+(letfn [(ibt [p v c] 
+  (if (empty c) c (let[fc (first c) sc (second c)] 
+    (if (nil? sc) (list fc) 
+      (lazy-cat (if (p fc sc) (list fc v) (list fc)) 
+        (ibt p v (rest c)))))))]ibt)
 
 133. nil
 
