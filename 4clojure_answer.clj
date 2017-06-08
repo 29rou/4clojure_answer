@@ -406,7 +406,11 @@ reduce +
         (mapcat (fn [[y & ys]] (cons (Character/toUpperCase y) ys)) ws)))))
 
 103. Generating k-combinations
-!!!!!!
+(letfn [(k-com [n s] 
+  (if (= n 1) 
+    (set (map #(set (list %)) s))
+      (set (for [s' s r (k-com (dec n) (disj s s'))] 
+        (conj  r s')))))]k-com)
 
 104. Write Roman Numerals
 (fn [x] 
