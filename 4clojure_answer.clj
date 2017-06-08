@@ -707,7 +707,11 @@ Class
 170. nil
 
 171. Intervals
-!!!!!!
+(defn iv' [x xs] (if-not (= (inc x) (first xs)) (list x xs) (iv' (first xs) (rest xs))))
+(fn [ns] (letfn [(iv' [x xs] (if-not (= (inc x) (first xs)) (list x xs) (iv' (first xs) (rest xs))))
+        (iv [xs] (if (empty? xs) []
+            (let[x (first xs) [x' xs'] (iv' x (rest xs))] 
+              (cons (vector x x') (iv xs')))))] (iv (sort (distinct ns)))))
 
 172. nil
 
