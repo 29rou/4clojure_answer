@@ -491,8 +491,6 @@ reduce +
       (apply + (take-last sizediv2 il)))))
 
 116. Prime Sandwich
-(defn prime [c] (if (> 2 c) false (not-any?  #(zero? (rem c %)) (range 2 c))))
-
 (fn [x] 
   (if (or (<= x 2) (not (not-any?  #(zero? (rem x %)) (range 2 x)))) false
     (letfn[(ps [num](filter (fn [n](not-any? #(zero? (mod n %1)) (range 2 n)))(iterate inc num)))]
@@ -528,7 +526,10 @@ reduce +
       (inc x) x)) 0 (map str %))
 
 121. Universal Computation Engine
-!!!!!!
+(fn [expr] (fn [v] (letfn [(uce ([xs] 
+  (if-not (list? xs) (v xs xs) 
+    (apply ({'+ +, '- -, '/ /, '* *} (first xs)) (map uce (rest xs))))))] (uce expr))))
+
 
 122. Read a binary number
 (fn [ns]
