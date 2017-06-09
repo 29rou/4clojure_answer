@@ -570,7 +570,16 @@ Class
 !!!!!!
 
 131. Sum Some Set Subsets
-!!!!!!
+(defn sset [x] (if (empty? x) '(0)  (let[x' (sset (rest x))] (concat x' (map #(+ % (first x)) x')))))
+(defn sset' [x] (if (empty? x) '(nil)  (let[x' (sset' (rest x))] (concat x' (map #((fnil + 0 0) % (first x)) x')))))
+(defn sset [& x] (let[x' (map #(set (sset' %)) x)] (reduce #(map %2 %1) x')))
+
+(fn [& x] 
+  (letfn[(sset' [x] 
+          (if (empty? x) '(nil)  
+            (let[x' (sset' (rest x))] 
+              (concat x' (map #((fnil + 0 0) % (first x)) x')))))]
+    (not (every? nil? (reduce #(map %2 %1) (map #(set (sset' %)) x))))))
 
 132. Insert between two items
 (letfn [(ibt [p v c] 
