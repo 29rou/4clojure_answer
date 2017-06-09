@@ -646,7 +646,13 @@ Class
    (p-trapezoid %))
 
 148. The Big Divide
-!!!!!!
+(fn [f x y] 
+  (let[f' (dec f) xq (quot f' x) yq (quot f' y)] 
+    (if (= 0 xq yq) 0 
+      (letfn[(sum [a d n] (quot (* n (+ (* 2N a) (* (dec n) d))) 2))] 
+        (- (+ (sum y y yq) (sum x x xq)) 
+          (let[xy (* x y) xyq (quot f' xy)] 
+            (sum xy xy xyq)))))))
 
 149. nil
 
