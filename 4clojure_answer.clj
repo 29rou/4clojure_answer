@@ -472,7 +472,16 @@ reduce +
 !!!!!!
 
 112. Sequs Horribilis
-!!!!!!
+(fn [n x] 
+  (letfn[(br [m s] 
+          (if (empty? s) (list m) 
+            (let[fs (first s) 
+                 [fs' m'] (if-not (sequential? fs) (list fs (+ m fs)) 
+                            (let[br' (br m fs)] (list (drop-last br') (last br'))))]
+              (if (< n m') (list m) (cons fs' (br m' (rest s)))))))]
+    (drop-last (br 0 x))))
+
+
 
 113. Making Data Dance
 !!!!!!
