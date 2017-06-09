@@ -731,7 +731,17 @@ x y
 176 nil
 
 177. Balancing Brackets
-!!!!!!
+(fn [st] 
+  (let[br {\{ \}, \[ \], \( \)} bl {\} \}, \] \], \) \)}]
+    (loop[bs '() s st] 
+      (if (empty? s) (empty? bs) 
+        (let[fs (first s) br' (br fs) bl' (bl fs)]
+          (recur (cond 
+                    (char? br') (cons br' bs) 
+                    (= bl' (first bs)) (rest bs)
+                    (char? bl') (cons bl' bs)
+                    :else bs) 
+            (rest s)))))))
 
 178. Best Hand
 !!!!!!
