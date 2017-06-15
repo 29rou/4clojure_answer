@@ -630,7 +630,11 @@ Class
 !!!!!!
 
 141. Tricky card games
-!!!!!!
+(fn [x] 
+  (fn [cs] 
+    (if (nil? x) 
+      (apply max-key (fn [{s :suit r :rank}] (+ r ({:spade 200, :club 100} s))) cs) 
+      (apply max-key :rank (filter #(= x (% :suit)) cs)))))
 
 142. nil
 
