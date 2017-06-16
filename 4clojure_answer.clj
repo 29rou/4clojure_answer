@@ -679,8 +679,29 @@ Class
 149. nil
 
 150. Palindromic Numbers
-!!!!!!
-
+(fn [a] 
+  (letfn [(dec [x] (map #(- (int %) (int \0)) (str x))) 
+          (enc [x] (reduce #(+ (* % 10) %2) 0 x)) 
+          (pln [n]  
+            (let [N (dec n) 
+                  l (count N) 
+                  d (quot l 2) 
+                  H (take d N) 
+                  H1 (dec (inc (enc H))) 
+                  Hr (reverse H)  
+                  h (enc Hr) 
+                  p (nth N d) 
+                  t (enc (take-last d N))] 
+              (enc 
+                (cond 
+                  (>= h t) 
+                    (if (even? l) 
+                      (concat H Hr) 
+                      (concat H (list p) Hr)) 
+                  (even? l) (concat H1 (reverse H1)) 
+                  (< p 9) (concat H (list (inc p)) Hr) 
+                  :else (concat H1 (list 0) (reverse H1))))))] 
+      (iterate #(pln (inc %)) (pln a))))
 151. nil
 
 152. Latin Square Slicing
